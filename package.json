@@ -1,11 +1,8 @@
 {
   "name": "dora-anyproxy",
-  "version": "3.8.3",
+  "version": "3.8.4",
   "description": "A fully configurable proxy in NodeJS, which can handle HTTPS requests perfectly.",
   "main": "proxy.js",
-  "bin": {
-    "anyproxy": "bin.js"
-  },
   "dependencies": {
     "async": "~0.9.0",
     "async-task-mgr": ">=1.1.0",
