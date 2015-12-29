@@ -54,7 +54,9 @@ function proxyServer(option){
         socketPort          = option.socketPort    || DEFAULT_WEBSOCKET_PORT, //port for websocket
         proxyConfigPort     = option.webConfigPort || DEFAULT_CONFIG_PORT,    //port to ui config server
         disableWebInterface = !!option.disableWebInterface,
-        ifSilent            = !!option.silent;
+        ifSilent            = !!option.silent,
+        generateRootCA      = option.generateRootCA !== false, // default is true
+        autoTrust           = !!option.autoTrust;
 
     if(ifSilent){
         logUtil.setPrintStatus(false);
@@ -112,6 +114,33 @@ function proxyServer(option){
                     self.httpProxyServer = http.createServer(requestHandler.userRequestHandler);
                     callback(null);
                 }
+            },
+
+            // generate root ca
+            function(callback) {
+                if(!generateRootCA || certMgr.isRootCAFileExists()) {
+                    callback(null);
+                    return;
+                }
+                certMgr.generateRootCA(callback);
+            },
+
+            // auto trust cert
+            function(callback) {
+                if (!autoTrust) {
+                    logUtil.printLog(color.green(color.bold("please trust the rootCA.crt in " + certMgr.certDir)));
+                    callback(null);
+                    return;
+                }
+                certMgr.isRootCATrusted(function(trusted) {
+                    if (trusted) {
+                        callback(null);
+                        return;
+                    }
+                    certMgr.trustRootCA(function(trusted) {
+                        callback(null);
+                    });
+                })
             },
 
             //handle CONNECT request for https over http
