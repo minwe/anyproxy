@@ -1,5 +1,5 @@
 {
-  "name": "dora-anyproxy",
+  "name": "dora-openproxy",
   "version": "3.9.1",
   "description": "A fully configurable proxy in NodeJS, which can handle HTTPS requests perfectly.",
   "main": "proxy.js",
